@@ -188,7 +188,7 @@ if not logbook_df.empty:
     logbook_df['Year'] = pd.to_datetime(logbook_df['Date']).dt.year
 
     # Filter for entries in the current month
-    monthly_entries = logbook_df[(logbook_df['Month'] == current_month) & (logbook_df['Year'] == current_year) & (logbook_df['Username'] == username)]
+    monthly_entries = logbook_df[(logbook_df['Month'] == current_month) & (logbook_df['Year'] == current_year)]
 
     # Count entries by Grade and Difficulty
     if not monthly_entries.empty:
