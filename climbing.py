@@ -70,13 +70,13 @@ with st.form("log_entry_form", clear_on_submit=True):
             style = [s if s != "Other" else other_style for s in style]
 
         # Add the new entry to the logbook dataframe
-        new_entry = {
+        new_entry = pd.DataFrame([{
             "Date": date,
             "Grade": grade,
             "Type": type_climb,
             "Style": ", ".join(style),  # Combine styles into a string
             "Difficulty": difficulty
-        }
+        }])
         logbook_df = pd.concat([logbook_df, new_entry], ignore_index=True)
         
         # Save the updated logbook to CSV
