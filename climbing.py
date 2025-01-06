@@ -181,33 +181,34 @@ st.subheader("Simple Viz of Sends")
 if not logbook_df.empty:
     logbook_df['Date'] = pd.to_datetime(logbook_df['Date']).dt.date
 
-# Filter data for the current month
-current_month = datetime.datetime.now().month
-current_year = datetime.datetime.now().year
-logbook_df['Month'] = pd.to_datetime(logbook_df['Date']).dt.month
-logbook_df['Year'] = pd.to_datetime(logbook_df['Date']).dt.year
+    # Filter data for the current month
+    current_month = datetime.datetime.now().month
+    current_year = datetime.datetime.now().year
+    logbook_df['Month'] = pd.to_datetime(logbook_df['Date']).dt.month
+    logbook_df['Year'] = pd.to_datetime(logbook_df['Date']).dt.year
 
-# Filter for entries in the current month
-monthly_entries = logbook_df[(logbook_df['Month'] == current_month) & (logbook_df['Year'] == current_year) & (logbook_df['Username'] == username)]
+    # Filter for entries in the current month
+    monthly_entries = logbook_df[(logbook_df['Month'] == current_month) & (logbook_df['Year'] == current_year) & (logbook_df['Username'] == username)]
 
-# Count entries by Grade and Difficulty
-if not monthly_entries.empty:
-    # Group by Grade and Difficulty and count the entries
-    grade_difficulty_counts = monthly_entries.groupby(['Grade', 'Difficulty']).size().unstack(fill_value=0)
+    # Count entries by Grade and Difficulty
+    if not monthly_entries.empty:
+        data = monthly_entries[monthly_entries['Username'] == username]
+        # Group by Grade and Difficulty and count the entries
+        grade_difficulty_counts = data.groupby(['Grade', 'Difficulty']).size().unstack(fill_value=0)
 
-    # Plotting using Matplotlib
-    ax = grade_difficulty_counts.plot(kind='bar', stacked=True, figsize=(10, 6), colormap='Set3')
+        # Plotting using Matplotlib
+        ax = grade_difficulty_counts.plot(kind='bar', stacked=True, figsize=(10, 6), colormap='Set3')
 
-    # Set plot labels and title
-    ax.set_xlabel('Grade')
-    ax.set_ylabel('Number of Entries')
-    ax.set_title('Climbing Logbook: Current Month Entries by Grade and Difficulty')
-    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-    plt.xticks(rotation=0, ha='center')
-    ax.legend(title="Difficulty", bbox_to_anchor=(1.05, 1), loc='upper left')
-    
-    # Show the plot
-    st.pyplot(ax.figure)
+        # Set plot labels and title
+        ax.set_xlabel('Grade')
+        ax.set_ylabel('Number of Entries')
+        ax.set_title('Climbing Logbook: Current Month Entries by Grade and Difficulty')
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+        plt.xticks(rotation=0, ha='center')
+        ax.legend(title="Difficulty", bbox_to_anchor=(1.05, 1), loc='upper left')
+        
+        # Show the plot
+        st.pyplot(ax.figure)
 
-else:
-    st.info("No entries for the current month. Add some entries!")
+    else:
+        st.info("No entries for the current month. Add some entries!")
