@@ -77,7 +77,7 @@ with st.form("log_entry_form", clear_on_submit=True):
             "Style": ", ".join(style),  # Combine styles into a string
             "Difficulty": difficulty
         }
-        logbook_df = logbook_df.append(new_entry, ignore_index=True)
+        logbook_df = pd.concat([logbook_df, new_entry], ignore_index=True)
         
         # Save the updated logbook to CSV
         save_logbook(logbook_df)
