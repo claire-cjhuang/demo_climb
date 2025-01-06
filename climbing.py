@@ -180,6 +180,7 @@ if not monthly_entries.empty:
     ax.set_ylabel('Number of Entries')
     ax.set_title('Climbing Logbook: Current Month Entries by Grade and Difficulty')
     ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+    plt.xticks(rotation=0, ha='center')
     ax.legend(title="Difficulty", bbox_to_anchor=(1.05, 1), loc='upper left')
     
     # Show the plot
