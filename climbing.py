@@ -176,41 +176,45 @@ if username:
 
 # Simple Viz of Sends
 st.subheader("Simple Viz of Sends")
-
-# Convert logbook dates to datetime.date type if necessary
 if not logbook_df.empty:
-    logbook_df['Date'] = pd.to_datetime(logbook_df['Date']).dt.date
+    # Filter for current user's data
+    user_data = logbook_df[logbook_df['Username'] == username]
 
-    # Filter data for the current month
-    current_month = datetime.datetime.now().month
-    current_year = datetime.datetime.now().year
-    logbook_df['Month'] = pd.to_datetime(logbook_df['Date']).dt.month
-    logbook_df['Year'] = pd.to_datetime(logbook_df['Date']).dt.year
+    # Ensure user_data is not empty
+    if not user_data.empty:
+        # Convert 'Date' column to datetime if necessary
+        user_data['Date'] = pd.to_datetime(user_data['Date']).dt.date
 
-    # Filter for entries in the current month
-    monthly_entries = logbook_df[(logbook_df['Month'] == current_month) & (logbook_df['Year'] == current_year)]
+        # Filter for current month and year
+        current_month = datetime.datetime.now().month
+        current_year = datetime.datetime.now().year
+        user_data['Month'] = pd.to_datetime(user_data['Date']).dt.month
+        user_data['Year'] = pd.to_datetime(user_data['Date']).dt.year
 
-    # Count entries by Grade and Difficulty
-    if not monthly_entries.empty:
-        data = monthly_entries[monthly_entries['Username'] == username]
-        # Group by Grade and Difficulty and count the entries
-        grade_difficulty_counts = data.groupby(['Grade', 'Difficulty']).size().unstack(fill_value=0)
+        # Filter for entries in the current month
+        monthly_entries = user_data[(user_data['Month'] == current_month) & (user_data['Year'] == current_year)]
 
-        # Plotting using Matplotlib
-        ax = grade_difficulty_counts.plot(kind='bar', stacked=True, figsize=(10, 6), colormap='Set3')
+        if not monthly_entries.empty:
+            # Count entries by Grade and Difficulty
+            grade_difficulty_counts = monthly_entries.groupby(['Grade', 'Difficulty']).size().unstack(fill_value=0)
 
-        # Set plot labels and title
-        ax.set_xlabel('Grade')
-        ax.set_ylabel('Number of Entries')
-        ax.set_title('Climbing Logbook: Current Month Entries by Grade and Difficulty')
-        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-        plt.xticks(rotation=0, ha='center')
-        ax.legend(title="Difficulty", bbox_to_anchor=(1.05, 1), loc='upper left')
-        
-        # Show the plot
-        st.pyplot(ax.figure)
+            # Plotting using Matplotlib
+            ax = grade_difficulty_counts.plot(kind='bar', stacked=True, figsize=(10, 6), colormap='Set3')
 
+            # Set plot labels and title
+            ax.set_xlabel('Grade')
+            ax.set_ylabel('Number of Entries')
+            ax.set_title('Climbing Logbook: Current Month Entries by Grade and Difficulty')
+            ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+            plt.xticks(rotation=0, ha='center')
+            ax.legend(title="Difficulty", bbox_to_anchor=(1.05, 1), loc='upper left')
+            
+            # Show the plot
+            st.pyplot(ax.figure)
+
+        else:
+            st.info("No entries for the current month. Add some entries!")
     else:
-        st.info("No entries for the current month. Add some entries!")
+        st.info(f"No data found for user: {username}. Add some entries!")
 else:
-    st.info("No entries yet. Add some!")
+    st.info("Logbook is empty. Add some entries!")
