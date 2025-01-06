@@ -212,3 +212,5 @@ if not logbook_df.empty:
 
     else:
         st.info("No entries for the current month. Add some entries!")
+else:
+    st.info("No entries yet. Add some!")
